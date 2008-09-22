@@ -18,10 +18,11 @@ hyperlänkar
 	<xsl:output method="text" encoding="utf-8" indent="no"/>
 	<xsl:strip-space elements="*"/>
 	<xsl:preserve-space elements="code samp"/>
-
-  <xsl:param name="fontsize">17</xsl:param>
+	
+  <!-- Possible values are 12pt, 14pt, 17pt and 20pt -->
+  <xsl:param name="fontsize">17pt</xsl:param>
+  <!-- Possible values are for example 'cmr', 'cmss' or 'cmvtt' -->
   <xsl:param name="fontfamily">cmr</xsl:param>
-  <xsl:param name="documentclass">book</xsl:param>
   <xsl:param name="defaultLanguage">english</xsl:param>
   <xsl:param name="papersize">a4paper</xsl:param>
 
@@ -34,14 +35,12 @@ hyperlänkar
    	<xsl:text>% DMFC dtbook2latex v0.2&#10;</xsl:text>
 	<xsl:text>% ***********************&#10;</xsl:text>
    	<xsl:text>\documentclass[</xsl:text>
-	<xsl:value-of select="$fontsize"/><xsl:text>pt,</xsl:text>
 	<xsl:value-of select="$papersize"/>
-	<xsl:text>,twoside]{</xsl:text>
-	<xsl:value-of select="$documentclass"/>
-	<xsl:text>}&#10;</xsl:text>   
+	<xsl:text>,twoside]{extbook}&#10;</xsl:text>   
    	<xsl:text>\usepackage[pdftex]{graphicx}&#10;</xsl:text>
    	<xsl:text>\usepackage{ucs}&#10;</xsl:text>
    	<xsl:text>\usepackage[utf8x]{inputenc}&#10;</xsl:text>
+   	<xsl:text>\usepackage[</xsl:text><xsl:value-of select="$fontsize"/><xsl:text>]{extsizes}&#10;</xsl:text>
    	<xsl:call-template name="findLanguage"/>
    	<xsl:text>\setlength{\parskip}{1.5ex}&#10;</xsl:text>
    	<xsl:text>\setlength{\parindent}{0ex}&#10;&#10;&#10;</xsl:text>
@@ -55,12 +54,16 @@ hyperlänkar
      <xsl:param name="iso639Code"/>
      <xsl:variable name="babelLang">
        <xsl:choose>
-   	 <xsl:when test="matches($iso639Code, 'sv([_\-].+)?')">swedish</xsl:when>
-   	 <xsl:when test="matches($iso639Code, 'en[_\-][Uu][Ss]')">USenglish</xsl:when>
-   	 <xsl:when test="matches($iso639Code, 'en[_\-][Uu][Kk]')">UKenglish</xsl:when>
-   	 <xsl:when test="matches($iso639Code, 'en([_\-].+)?')">english</xsl:when>
-   	 <xsl:when test="matches($iso639Code, 'de([_\-].+)?')">ngerman</xsl:when>
-	 <xsl:otherwise><xsl:value-of select="$defaultLanguage"/></xsl:otherwise>
+   	 <xsl:when test="matches($iso639Code, 'sv(-.+)?')">swedish</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'en-[Uu][Ss]')">USenglish</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'en-[Uu][Kk]')">UKenglish</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'en(-.+)?')">english</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'de(-.+)?')">ngerman</xsl:when>
+	 <xsl:otherwise>
+	   <xsl:message>
+	     ***** <xsl:value-of select="$iso639Code"/> not supported. Defaulting to '<xsl:value-of select="$defaultLanguage"/>' ******
+	   </xsl:message>
+	   <xsl:value-of select="$defaultLanguage"/></xsl:otherwise>
        </xsl:choose>
      </xsl:variable>
      <xsl:value-of select="$babelLang"/>
